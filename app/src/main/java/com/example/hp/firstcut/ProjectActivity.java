@@ -13,13 +13,20 @@ import android.view.View;
 
 import com.example.hp.firstcut.Adapters.ProItemAdapter;
 import com.example.hp.firstcut.Adapters.Project;
+import com.example.hp.firstcut.Fragments.ProjectFragment;
 
 import java.util.ArrayList;
 
 public class ProjectActivity extends AppCompatActivity {
-    RecyclerView pro_recycler;
-    ArrayList<Project> projects=new ArrayList<>();
-    ProItemAdapter pIa;
+
+    ProjectFragment projectFragment;
+    public static FloatingActionButton fab;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getFragmentManager().popBackStack();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +35,9 @@ public class ProjectActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Project");
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        pro_recycler=(RecyclerView)findViewById(R.id.pro_recycler);
-        pro_recycler.setLayoutManager(new LinearLayoutManager(ProjectActivity.this));
-        projects.add(new Project("FirstApp"));
-        projects.add(new Project("Whatsapp"));
-        projects.add(new Project("FaceBook"));
-        pIa=new ProItemAdapter(R.layout.procard,projects);
-        pro_recycler.setAdapter(pIa);
+
+         fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,17 +45,21 @@ public class ProjectActivity extends AppCompatActivity {
                 bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
             }
         });
+        getFragmentManager().beginTransaction().replace(R.id.frame_container,new ProjectFragment()).commit();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        pIa.setOnItemClickListener(new ProItemAdapter.MyClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                startActivity(new Intent(ProjectActivity.this,CameraActivity.class));
-            }
-        });
-    }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//       projectFragment.setOnItemClickListener2(new ProjectFragment.MyClickListener3() {
+//           @Override
+//           public void onItemClick(int position, View v) {
+//               fab.setVisibility(View.INVISIBLE);
+//           }
+//       });
+//    }
+
+
 
 }

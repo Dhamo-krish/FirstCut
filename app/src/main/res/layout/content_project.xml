@@ -8,9 +8,11 @@
     tools:context="com.example.hp.firstcut.ProjectActivity"
     tools:showIn="@layout/activity_project">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/pro_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
+    <FrameLayout
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>
