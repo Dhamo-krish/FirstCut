@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.hp.firstcut.Adapters.DummyAdapter;
 import com.example.hp.firstcut.Adapters.ProActItemAdapter;
 import com.example.hp.firstcut.Adapters.ProItemAdapter;
 import com.example.hp.firstcut.Adapters.ProjectActivityAdapter;
@@ -44,22 +45,16 @@ public class ActivityFragment extends Fragment {
             }
         });
         act_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        System.out.println("The project name Is : "+ DummyAdapter.s3path);
         proAdap.add(new ProjectActivityAdapter("MainActivity"));
         proAdap.add(new ProjectActivityAdapter("SecondActivity"));
-        pAIa=new ProActItemAdapter(R.layout.procard,proAdap);
+        pAIa=new ProActItemAdapter(R.layout.actcard,proAdap);
         act_recycler.setAdapter(pAIa);
         return v;
     }
     @Override
     public void onResume() {
         super.onResume();
-        pAIa.setOnItemClickListener2(new ProActItemAdapter.MyClickListener2()
-        {
-            @Override
-            public void onItemClick(int position, View v)
-            {
 
-            }
-        });
     }
 }

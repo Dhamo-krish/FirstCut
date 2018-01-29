@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "573353831481",
+    "project_id": "firstcut-193108"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573353831481:android:3de646f64f98d451",
+        "android_client_info": {
+          "package_name": "com.example.hp.firstcut"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573353831481-vf78anlupvjod9va8ejc4u77ssmni7fc.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "573353831481-rasotv332cvd01ppltm8mb29b56lpq92.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hp.firstcut",
+            "certificate_hash": "f30470ac63a236d892ff7e05e638d42277cb39c8"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGoy_3W5yRG9JIAS5Yu8LEv4upagmrfY0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

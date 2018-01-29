@@ -54,11 +54,12 @@ public class ProActItemAdapter extends RecyclerView.Adapter<ProActItemAdapter.Vi
         public ViewHolder(View view)
         {
             super(view);
-            textView=(TextView)view.findViewById(R.id.proname);
+            textView=(TextView)view.findViewById(R.id.actname);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view)
-                {
+                {   DummyAdapter.s3path = "";
+                    DummyAdapter.s3path = textView.getText().toString();
                     myClickListener1.onItemClick(getAdapterPosition(), view);
 
                 }
