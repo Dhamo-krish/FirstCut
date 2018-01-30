@@ -21,8 +21,11 @@ import java.util.ArrayList;
 public class ProItemAdapter extends RecyclerView.Adapter<ProItemAdapter.ViewHolder>
 {
     private int listItemLayout;
+    public View itemview;
+     public  static View view1;
     private ArrayList<Project> list1;
-    public MyClickListener myClickListener;
+
+    public static MyClickListener myClickListener;
     public ProItemAdapter(int listlayout, ArrayList<Project> tl)
     {
         this.listItemLayout=listlayout;
@@ -30,16 +33,21 @@ public class ProItemAdapter extends RecyclerView.Adapter<ProItemAdapter.ViewHold
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(listItemLayout, parent, false);
-        final ViewHolder myViewHolder = new ViewHolder(view);
+        view1 = LayoutInflater.from(parent.getContext()).inflate(listItemLayout, parent, false);
+        final ViewHolder myViewHolder = new ViewHolder(view1);
         return myViewHolder;
     }
+
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
 
+
+
         holder.textView.setText(list1.get(position).getPro_name());
+        System.out.println("Size of the projects : "+list1.size());
+
     }
 
     @Override
@@ -49,7 +57,9 @@ public class ProItemAdapter extends RecyclerView.Adapter<ProItemAdapter.ViewHold
     }
 
 
-    class ViewHolder extends RecyclerView.ViewHolder
+
+
+     public static class ViewHolder extends RecyclerView.ViewHolder
     {
 
         TextView textView;
@@ -57,24 +67,32 @@ public class ProItemAdapter extends RecyclerView.Adapter<ProItemAdapter.ViewHold
         {
             super(view);
             textView=(TextView)view.findViewById(R.id.proname);
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view)
+                public void onClick(View v)
                 {
-                    myClickListener.onItemClick(getAdapterPosition(), view);
+
+                      myClickListener.onItemClick(getAdapterPosition(),view1);
+
+
                 }
             });
+
 
 
         }
 
     }
+
     public interface MyClickListener
     {
-        void onItemClick(int position, View v);
+        void onItemClick(int ff,View v);
     }
+
     public void setOnItemClickListener(MyClickListener myClickListener) {
         this.myClickListener = myClickListener;
+
     }
 
 

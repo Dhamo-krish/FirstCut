@@ -19,8 +19,9 @@ import static com.example.hp.firstcut.ProjectActivity.fab;
 public class ProActItemAdapter extends RecyclerView.Adapter<ProActItemAdapter.ViewHolder>
 {
     private int listItemLayout;
+    View view2;
     private ArrayList<ProjectActivityAdapter> list1;
-    public ProActItemAdapter.MyClickListener2 myClickListener1;
+    public static  MyClickListener2 myClickListener1;
     public ProActItemAdapter(int listlayout, ArrayList<ProjectActivityAdapter> tl)
     {
         this.listItemLayout=listlayout;
@@ -28,8 +29,8 @@ public class ProActItemAdapter extends RecyclerView.Adapter<ProActItemAdapter.Vi
     }
     @Override
     public ProActItemAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(listItemLayout, parent, false);
-        final ProActItemAdapter.ViewHolder myViewHolder = new ProActItemAdapter.ViewHolder(view);
+        view2 = LayoutInflater.from(parent.getContext()).inflate(listItemLayout, parent, false);
+        final ProActItemAdapter.ViewHolder myViewHolder = new ProActItemAdapter.ViewHolder(view2);
         return myViewHolder;
     }
 
@@ -54,12 +55,12 @@ public class ProActItemAdapter extends RecyclerView.Adapter<ProActItemAdapter.Vi
         public ViewHolder(View view)
         {
             super(view);
-            textView=(TextView)view.findViewById(R.id.proname);
+            textView=(TextView)view.findViewById(R.id.actname);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view)
                 {
-                    myClickListener1.onItemClick(getAdapterPosition(), view);
+                    myClickListener1.onItemClick(getAdapterPosition(), view2);
 
                 }
             });
