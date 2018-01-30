@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.hp.firstcut">
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.hardware.camera2.full"/>
+    <uses-permission android:name="android.hardware.camera2.full" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FullScreen">
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,8 +24,13 @@
         <activity
             android:name=".ProjectActivity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/FullScreen"></activity>
+            android:theme="@style/FullScreen" />
         <activity android:name=".CameraActivity" />
+        <activity
+            android:name=".ImageViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_image_view"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

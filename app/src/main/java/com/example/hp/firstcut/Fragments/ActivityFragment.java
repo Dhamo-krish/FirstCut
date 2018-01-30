@@ -10,11 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.hp.firstcut.Adapters.ProActItemAdapter;
 import com.example.hp.firstcut.Adapters.ProItemAdapter;
 import com.example.hp.firstcut.Adapters.ProjectActivityAdapter;
 import com.example.hp.firstcut.CameraActivity;
+import com.example.hp.firstcut.ImageViewActivity;
 import com.example.hp.firstcut.R;
 
 import java.util.ArrayList;
@@ -44,8 +46,8 @@ public class ActivityFragment extends Fragment {
             }
         });
         act_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        proAdap.add(new ProjectActivityAdapter("MainActivity"));
-        proAdap.add(new ProjectActivityAdapter("SecondActivity"));
+        proAdap.add(new ProjectActivityAdapter("MainActivity","//file"));
+        proAdap.add(new ProjectActivityAdapter("SecondActivity",""));
         pAIa=new ProActItemAdapter(R.layout.procard,proAdap);
         act_recycler.setAdapter(pAIa);
         return v;
@@ -55,11 +57,21 @@ public class ActivityFragment extends Fragment {
         super.onResume();
         pAIa.setOnItemClickListener2(new ProActItemAdapter.MyClickListener2()
         {
+
+
             @Override
-            public void onItemClick(int position, View v)
-            {
+            public void onItemClick(int position, View v) {
+                Intent imageIntent =new Intent(getActivity(), ImageViewActivity.class);
+                imageIntent.putExtra("key",proAdap.get(position).getUrl()) ;
+                if(proAdap.get(position).getUrl().equals("")) {
+                    Toast.makeText(getActivity(), "NO Image Exists", Toast.LENGTH_SHORT).show();
+                }
+                else {startActivity(imageIntent);}
 
             }
+
+
+
         });
     }
 }
