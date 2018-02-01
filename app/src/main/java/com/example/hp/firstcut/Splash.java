@@ -54,6 +54,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResolvingResultCallbacks;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -70,12 +73,13 @@ public class Splash extends AppCompatActivity implements GoogleApiClient.OnConne
     boolean visible;
     GoogleApiClient googleApiClient;
     private static int ReqCode = 100;
+    private  static  int SIGN_OUT = 8788;
     SharedPreferences sharedPreferences ;
     AmazonDynamoDBClient ddbclient;
     String name,email,url;
 
 
-    AWSCredentials credentials = new BasicAWSCredentials("AKIAID5UFVAFVQCYVHRA","xdHWdVe7ROxGZXrbcAaegMmXwFAx0buAwC7zDdgq");
+    AWSCredentials credentials = new BasicAWSCredentials("AKIAJ3QRFSJLAJP5U3GA","JnttF8Wooim3B5n+SrKnzeH/47GEUykKf+bYRmkz");
 
 
 
@@ -94,7 +98,13 @@ public class Splash extends AppCompatActivity implements GoogleApiClient.OnConne
 
 
         Boolean islog = sharedPreferences.getBoolean("isLogged",false);
-        if(islog){
+
+        boolean signout= sharedPreferences.getBoolean("LoggedOut",false);
+
+        if(signout){
+
+            signout();
+        }else if(islog){
 
             startActivity(new Intent(Splash.this,ProjectActivity.class));
             finish();
@@ -124,6 +134,15 @@ public class Splash extends AppCompatActivity implements GoogleApiClient.OnConne
                 signin();
             }
         });
+    }
+    void signout(){
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+
+
+
     }
     void signin(){
         Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);

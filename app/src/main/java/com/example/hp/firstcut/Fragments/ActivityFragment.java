@@ -46,7 +46,7 @@ public class ActivityFragment extends Fragment {
     ProActItemAdapter pAIa;
     FloatingActionButton camera_fab;
     AmazonS3 s3;
-    AWSCredentials credentials = new BasicAWSCredentials("AKIAID5UFVAFVQCYVHRA","xdHWdVe7ROxGZXrbcAaegMmXwFAx0buAwC7zDdgq");
+    AWSCredentials credentials = new BasicAWSCredentials("AKIAJ3QRFSJLAJP5U3GA","JnttF8Wooim3B5n+SrKnzeH/47GEUykKf+bYRmkz");
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {

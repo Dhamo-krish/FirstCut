@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,8 +17,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -41,13 +45,41 @@ import java.util.ArrayList;
 public class ProjectActivity extends AppCompatActivity {
 
     ProjectFragment projectFragment;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+
+
+        return true;
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if(id == R.id.sign_out){
+            Toast.makeText(this, "bowww....", Toast.LENGTH_SHORT).show();
+            SharedPreferences sharedPreferences = getSharedPreferences("Users",MODE_PRIVATE);
+            SharedPreferences.Editor editor= sharedPreferences.edit();
+
+            editor.putBoolean("LoggedOut",true);
+            editor.commit();
+            startActivity(new Intent(ProjectActivity.this, Splash.class));
+        }
+        return true;
+    }
+
     public static FloatingActionButton fab;
     String Project_Name;
     ProgressDialog progressDialog;
     Dialog dialog1;
     PutObjectRequest putObjectRequest;
     AmazonS3 s3;
-    AWSCredentials credentials = new BasicAWSCredentials("AKIAID5UFVAFVQCYVHRA","xdHWdVe7ROxGZXrbcAaegMmXwFAx0buAwC7zDdgq");
+    AWSCredentials credentials = new BasicAWSCredentials("AKIAJ3QRFSJLAJP5U3GA","JnttF8Wooim3B5n+SrKnzeH/47GEUykKf+bYRmkz");
 
 
     @Override

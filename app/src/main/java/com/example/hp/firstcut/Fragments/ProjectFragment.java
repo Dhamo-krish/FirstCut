@@ -53,7 +53,7 @@ public class ProjectFragment extends Fragment {
     CognitoCachingCredentialsProvider credentialsProvider;
     Thread thread;
 
-    AWSCredentials credentials = new BasicAWSCredentials("AKIAID5UFVAFVQCYVHRA","xdHWdVe7ROxGZXrbcAaegMmXwFAx0buAwC7zDdgq");
+    AWSCredentials credentials = new BasicAWSCredentials("AKIAJ3QRFSJLAJP5U3GA","JnttF8Wooim3B5n+SrKnzeH/47GEUykKf+bYRmkz");
 
 
     @Nullable

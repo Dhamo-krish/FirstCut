@@ -115,7 +115,7 @@ public class ImageViewActivity extends AppCompatActivity {
     ImageView image;
     AmazonS3 s3;
     URL AWSImgUrl;
-    AWSCredentials credentials = new BasicAWSCredentials("AKIAID5UFVAFVQCYVHRA","xdHWdVe7ROxGZXrbcAaegMmXwFAx0buAwC7zDdgq");
+    AWSCredentials credentials = new BasicAWSCredentials("AKIAJ3QRFSJLAJP5U3GA","JnttF8Wooim3B5n+SrKnzeH/47GEUykKf+bYRmkz");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

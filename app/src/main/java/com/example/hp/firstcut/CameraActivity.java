@@ -80,7 +80,7 @@ public class CameraActivity extends AppCompatActivity {
     String activity_name;
     AmazonS3 s3;
     ProgressDialog progressDialog;
-    AWSCredentials credentials = new BasicAWSCredentials("AKIAID5UFVAFVQCYVHRA","xdHWdVe7ROxGZXrbcAaegMmXwFAx0buAwC7zDdgq");
+    AWSCredentials credentials = new BasicAWSCredentials("AKIAJ3QRFSJLAJP5U3GA","JnttF8Wooim3B5n+SrKnzeH/47GEUykKf+bYRmkz");
     TransferUtility transferUtility;
 
     //Check state orientation of output image
@@ -436,7 +436,7 @@ public class CameraActivity extends AppCompatActivity {
             progressDialog = new ProgressDialog(getBaseContext());
             progressDialog.setMessage("Creating Activity...");
             progressDialog.setCancelable(false);
-            progressDialog.show();
+//            progressDialog.show();
         }
 
         @Override
