@@ -1,8 +1,10 @@
 package com.example.hp.firstcut;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -17,6 +19,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,6 +40,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
+import com.amazonaws.services.s3.model.DeleteObjectsResult;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ProgressEvent;
+import com.amazonaws.services.s3.model.ProgressListener;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
+import com.example.hp.firstcut.Adapters.DummyAdapter;
+import com.example.hp.firstcut.Fragments.ActivityFragment;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -52,6 +77,11 @@ public class CameraActivity extends AppCompatActivity {
 
     private Button btnCapture;
     private TextureView textureView;
+    String activity_name;
+    AmazonS3 s3;
+    ProgressDialog progressDialog;
+    AWSCredentials credentials = new BasicAWSCredentials("AKIAJ3QRFSJLAJP5U3GA","JnttF8Wooim3B5n+SrKnzeH/47GEUykKf+bYRmkz");
+    TransferUtility transferUtility;
 
     //Check state orientation of output image
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -103,6 +133,12 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+
+
+
+        s3 = new AmazonS3Client(credentials);
+        s3.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         textureView = (TextureView)findViewById(R.id.textureView);
         //From Java 1.4 , you can use keyword 'assert' to check expression true or false
@@ -367,6 +403,13 @@ public class CameraActivity extends AppCompatActivity {
         dialogBuilder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //do something with edt.getText().toString();
+
+                activity_name = edt.getText().toString();
+
+                new Activity_Image_Upload().execute();
+
+
+
             }
         });
         dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -382,5 +425,82 @@ public class CameraActivity extends AppCompatActivity {
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
+    }
+
+
+    public class Activity_Image_Upload extends AsyncTask<String, Integer, String>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(getBaseContext());
+            progressDialog.setMessage("Creating Activity...");
+            progressDialog.setCancelable(false);
+//            progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            progressDialog.dismiss();
+            if(file.delete()){
+                Toast.makeText(CameraActivity.this, "Image deleted...", Toast.LENGTH_SHORT).show();
+            }
+            finish();
+
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            transferUtility = new TransferUtility(s3,getBaseContext());
+
+            ProgressListener progressListener = new ProgressListener() {
+                @Override
+                public void progressChanged(ProgressEvent progressEvent) {
+                    System.out.println("The progresss is : "+progressEvent.getBytesTransfered());
+
+                }
+            };
+            SharedPreferences sharedPreferences= getSharedPreferences("Users",MODE_PRIVATE);
+            String name = sharedPreferences.getString("name","");
+
+            System.out.println("The path is :"+DummyAdapter.s3path);
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest("com.jusdraw/"+name+"/"+ DummyAdapter.s3path,activity_name+".jpg",file).withProgressListener(progressListener);
+
+            if(s3.doesObjectExist("com.jusdraw/"+name+"/"+DummyAdapter.s3path,DummyAdapter.s3path+".txt")){
+                s3.deleteObject("com.jusdraw/"+name+"/"+DummyAdapter.s3path,DummyAdapter.s3path+".txt");
+            }
+            PutObjectResult putObjectResult = s3.putObject(putObjectRequest);
+
+            System.out.println("Uploading result : "+  putObjectResult);
+
+
+//            TransferObserver observer = transferUtility.upload("firstcutapplication/"+ DummyAdapter.s3path+"/"+activity_name,activity_name+".jpg",file);
+//
+//            observer.setTransferListener(new TransferListener() {
+//                @Override
+//                public void onStateChanged(int id, TransferState state) {
+//                    System.out.println("the state is changed : "+state);
+//                }
+//
+//                @Override
+//                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+//                   int percentage = (int ) (bytesCurrent/bytesTotal) * 100;
+//                   System.out.println("The percentage is : "+ percentage);
+//                }
+//
+//                @Override
+//                public void onError(int id, Exception ex) {
+//                   System.out.println("The error is : "+ ex);
+//                }
+//            });
+
+
+
+
+            return null;
+        }
     }
 }

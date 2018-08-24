@@ -1,7 +1,12 @@
 package com.example.hp.firstcut;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +15,27 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import com.amazonaws.HttpMethod;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.example.hp.firstcut.Adapters.DummyAdapter;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -88,6 +113,9 @@ public class ImageViewActivity extends AppCompatActivity {
     };
     Button close;
     ImageView image;
+    AmazonS3 s3;
+    URL AWSImgUrl;
+    AWSCredentials credentials = new BasicAWSCredentials("AKIAJ3QRFSJLAJP5U3GA","JnttF8Wooim3B5n+SrKnzeH/47GEUykKf+bYRmkz");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,20 +123,24 @@ public class ImageViewActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_image_view);
 
-        String url=getIntent().getExtras().get("key").toString();
+//        String url=getIntent().getExtras().get("key").toString();
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.picture);
         image=(ImageView)findViewById(R.id.picture);
         close=(Button)findViewById(R.id.dummy_button);
-        if(url.equals(""))
-        {
-            System.out.println("NOT DONE"+url);
-        }
-        else
-        {
-            System.out.println("DONE"+url);
-        }
+
+        s3 = new AmazonS3Client(credentials);
+        s3.setRegion(Region.getRegion(Regions.US_EAST_1));
+        new GetImageURl_Task().execute();
+//        if(url.equals(""))
+//        {
+//            System.out.println("NOT DONE"+url);
+//        }
+//        else
+//        {
+//            System.out.println("DONE"+url);
+//        }
 
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -182,5 +214,69 @@ public class ImageViewActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+    public class GetImageURl_Task extends AsyncTask<String, Integer, String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+
+            String name  = sharedPreferences.getString("name","");
+
+
+            String s3objpath= "com.jusdraw/"+name+"/";
+
+            System.out.println("Name is : "+name+ s3objpath);
+
+            ListObjectsRequest listobjects = new ListObjectsRequest().withBucketName("com.jusdraw");
+
+
+
+            ObjectListing result = s3.listObjects(listobjects);
+            for (S3ObjectSummary objectSummary : result.getObjectSummaries()){
+                System.out.println("The Object Key is : " + objectSummary.getKey().toString());
+                String[] split = objectSummary.getKey().toString().split("/");
+                System.out.println("the splited Key is : " + split[0]);
+                if(split[0].equals(name)){
+                    if(DummyAdapter.s3path.equals(split[1])){
+                        if(DummyAdapter.Activity_Name.equals(split[2])){
+                            Date expiration = new Date();
+                             long sec = expiration.getTime();
+                             sec += 1000*60*60;
+                             expiration.setTime(sec);
+
+
+                            File file =new File(Environment.getExternalStorageDirectory()+"/FirstCut/"+DummyAdapter.s3path+"/"+DummyAdapter.Activity_Name);
+                            if(file.mkdir()){
+                                File newFile = new File(file.getPath());
+
+                            }
+
+
+                            GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest("com.jusdraw/"+name+"/"+DummyAdapter.s3path,DummyAdapter.Activity_Name);
+                            urlRequest.setMethod(HttpMethod.GET);
+                            urlRequest.setExpiration(expiration);
+                            AWSImgUrl = s3.generatePresignedUrl(urlRequest);
+                            try {
+                                final Bitmap bitmap = BitmapFactory.decodeStream(AWSImgUrl.openConnection().getInputStream());
+                               runOnUiThread(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       image.setImageBitmap(bitmap);
+                                   }
+                               });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+                    }
+                }
+//                DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest("firstcutapplication/"+)
+            }
+            return null;
+        }
     }
 }

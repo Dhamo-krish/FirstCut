@@ -7,21 +7,6 @@ package com.example.hp.firstcut.Adapters;
 public class ProjectActivityAdapter {
     String activities;
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public ProjectActivityAdapter(String activities, String url) {
-        this.activities = activities;
-        this.url = url;
-    }
-
-    String url;
-
     public String getActivities() {
         return activities;
     }
